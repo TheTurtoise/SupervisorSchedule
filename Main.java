@@ -1,6 +1,5 @@
 import certExamPractice.FileIO;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class Main {
@@ -14,12 +13,12 @@ public class Main {
             sizeList.put(i, 0);
         }
 
-        try {
-            FileIO.reading();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        FileIO.reading();
+
+//        FileIO.writing();
 
         System.out.println(sizeList);
+
+        new CalendarGUI();
     }
 }
