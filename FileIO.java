@@ -14,6 +14,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class FileIO {
+
+    static int rowIteration = 0;
+    static int cellIteration = 0;
     public static void reading() {
         // Read
         try {
@@ -33,21 +36,29 @@ public class FileIO {
                 //For each row, iterate through all the columns
                 Iterator<Cell> cellIterator = row.cellIterator();
 
-                while (cellIterator.hasNext())
+                cellIteration = 0;
+                while (cellIteration <= 17)
                 {
-                    Cell cell = cellIterator.next();
+                    Cell cell = row.getCell(cellIteration);
                     //Check the cell type and format accordingly
-                    switch (cell.getCellType())
-                    {
-                        case Cell.CELL_TYPE_NUMERIC:
-                            System.out.print(cell.getNumericCellValue() + "\t");
-                            break;
-                        case Cell.CELL_TYPE_STRING:
-                            System.out.print(cell.getStringCellValue() + "\t");
-                            break;
+                    if (cell == null) {
+                        System.out.print("Empty ");
+                        System.out.println(rowIteration + ", " + cellIteration);
+                    } else {
+                        switch (cell.getCellType()) {
+                            case Cell.CELL_TYPE_NUMERIC:
+//                            System.out.print(cell.getNumericCellValue() + "\t");
+                                System.out.println(rowIteration + ", " + cellIteration);
+                                break;
+                            case Cell.CELL_TYPE_STRING:
+//                            System.out.print(cell.getStringCellValue() + "\t");
+                                System.out.println(rowIteration + ", " + cellIteration);
+                                break;
+                        }
                     }
+                    cellIteration++;
                 }
-                System.out.println("");
+                rowIteration++;
             }
             file.close();
         } catch (Exception e) {
