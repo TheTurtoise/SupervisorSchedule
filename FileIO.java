@@ -8,15 +8,20 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class FileIO {
+    static List<List<String>> dataTable = new ArrayList<List<String>>();
 
     static int rowIteration = 0;
-    static int cellIteration = 0;
+    static int columnIteration = 0;
+
+    public static void instantiate() {
+        for(int i = 0; i < 17; i++)  {
+            dataTable.add(new ArrayList<String>());
+        }
+        System.out.println("2d arraylist instantiated");
+    }
     public static void reading() {
         // Read
         try {
@@ -36,27 +41,27 @@ public class FileIO {
                 //For each row, iterate through all the columns
                 Iterator<Cell> cellIterator = row.cellIterator();
 
-                cellIteration = 0;
-                while (cellIteration <= 17)
+                columnIteration = 0;
+                while (columnIteration <= 17)
                 {
-                    Cell cell = row.getCell(cellIteration);
+                    Cell cell = row.getCell(columnIteration);
                     //Check the cell type and format accordingly
                     if (cell == null) {
                         System.out.print("Empty ");
-                        System.out.println(rowIteration + ", " + cellIteration);
+                        System.out.println(rowIteration + ", " + columnIteration);
                     } else {
                         switch (cell.getCellType()) {
                             case Cell.CELL_TYPE_NUMERIC:
-//                            System.out.print(cell.getNumericCellValue() + "\t");
-                                System.out.println(rowIteration + ", " + cellIteration);
+                                dataTable.get(rowIteration).add(String.valueOf(cell.getNumericCellValue()));
+                                System.out.println(rowIteration + ", " + columnIteration);
                                 break;
                             case Cell.CELL_TYPE_STRING:
-//                            System.out.print(cell.getStringCellValue() + "\t");
-                                System.out.println(rowIteration + ", " + cellIteration);
+                                dataTable.get(rowIteration).add(cell.getStringCellValue());
+                                System.out.println(rowIteration + ", " + columnIteration);
                                 break;
                         }
                     }
-                    cellIteration++;
+                    columnIteration++;
                 }
                 rowIteration++;
             }
@@ -66,6 +71,7 @@ public class FileIO {
         }
 
         System.out.println("\nsuccess");
+        System.out.println(dataTable);
     }
 
     public static void writing() {
