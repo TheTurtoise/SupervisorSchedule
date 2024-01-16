@@ -35,12 +35,9 @@ public class FileIO {
 
             //Iterate through each rows one by one
             Iterator<Row> rowIterator = sheet.iterator();
-            while (rowIterator.hasNext())
-            {
+            while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                //For each row, iterate through all the columns
-                Iterator<Cell> cellIterator = row.cellIterator();
-
+                
                 columnIteration = 0;
                 while (columnIteration <= 17)
                 {
@@ -49,6 +46,7 @@ public class FileIO {
                     if (cell == null) {
                         System.out.print("Empty ");
                         System.out.println(rowIteration + ", " + columnIteration);
+                        dataTable.get(rowIteration).add("Empty");
                     } else {
                         switch (cell.getCellType()) {
                             case Cell.CELL_TYPE_NUMERIC:
@@ -57,6 +55,10 @@ public class FileIO {
                                 break;
                             case Cell.CELL_TYPE_STRING:
                                 dataTable.get(rowIteration).add(cell.getStringCellValue());
+                                System.out.println(rowIteration + ", " + columnIteration);
+                                break;
+                            case Cell.CELL_TYPE_BOOLEAN:
+                                dataTable.get(rowIteration).add(String.valueOf(cell.getBooleanCellValue()));
                                 System.out.println(rowIteration + ", " + columnIteration);
                                 break;
                         }
@@ -124,7 +126,7 @@ public class FileIO {
             FileOutputStream out = new FileOutputStream(new File("teacher-input-template.xlsx"));
             workbook.write(out);
             out.close();
-            System.out.println("howtodoinjava_demo.xlsx written successfully on disk.");
+            System.out.println("teacher-input-template.xlsx written successfully on disk.");
         }
         catch (Exception e)
         {
@@ -133,5 +135,9 @@ public class FileIO {
 
         System.out.println("\nsuccess");
 
+    }
+
+    public static List<List<String>> getDataTable() {
+        return dataTable;
     }
 }
