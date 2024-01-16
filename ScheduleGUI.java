@@ -42,8 +42,7 @@ public class ScheduleGUI {
         scheduleTable = new JTable(scheduleTableModel);
         String headings[] = {"Time", "Duty", "Monday", "Tue", "Wed", "Thu", "Fri"};
         scheduleTableModel.setColumnIdentifiers(headings);
-        scheduleTable.getRow
-        //scheduleTableModel.setRowCount(5);
+        scheduleTableModel.setRowCount(5);
         scheduleTableModel.setColumnCount(7);
         scheduleTable.setRowHeight(110);
         scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(130);
