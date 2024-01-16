@@ -17,6 +17,7 @@ public class FileIO {
     static int columnIteration = 0;
 
     public static void instantiate() {
+        // ISSUE IS HERE
         for(int i = 0; i < 17; i++)  {
             dataTable.add(new ArrayList<String>());
         }
