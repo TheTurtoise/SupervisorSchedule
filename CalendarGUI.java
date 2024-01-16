@@ -17,7 +17,8 @@ public class CalendarGUI {
     private java.util.Calendar myCalendar;
     private JScrollPane calendarScrollPane;
     private JFrame f = new JFrame("Calendar!");
-    private JPanel thePanel = new JPanel();
+    private JPanel mainPanel = new JPanel();
+    private JPanel labelPanel = new JPanel();
     int year;
     int month;
     CalendarGUI() {
@@ -39,19 +40,15 @@ public class CalendarGUI {
 
 
         // Add some padding around the tablePanel
-        tablePanel.setBorder(BorderFactory.createEmptyBorder(200, 0, 20, 0)); // Adjust the values as needed
+        tablePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Adjust the values as needed
 
 
         // Add the tablePanel to the center of the frame
         f.add(tablePanel, BorderLayout.CENTER);
 
 
-
-
-
-
         // Add the buttonPanel to the south (bottom) of the frame
-        f.add(thePanel, BorderLayout.NORTH);
+        f.add(mainPanel, BorderLayout.NORTH);
 
 
         f.setVisible(true);
@@ -62,8 +59,9 @@ public class CalendarGUI {
         //Button text
         monthLabel = new JLabel("", JLabel.CENTER);
         prevMonthButton = new JButton("<");
+        prevMonthButton.setFocusable(false);
         nextMonthButton = new JButton(">");
-
+        nextMonthButton.setFocusable(false);
 
         // make buttons change month
         prevMonthButton.addActionListener(new ActionListener() {
@@ -85,17 +83,17 @@ public class CalendarGUI {
 
 
         //add stuff to panel
-        thePanel.setBackground(Color.red);
-        thePanel.add(nextMonthButton);
-        thePanel.add(prevMonthButton);
-        thePanel.add(monthLabel);
+        mainPanel.setBackground(Color.red);
+        mainPanel.setPreferredSize(new Dimension(500, 40));
+        mainPanel.add(nextMonthButton);
+        mainPanel.add(prevMonthButton);
+        mainPanel.add(monthLabel);
 
 
         calendarTableModel = createNonEditableTableModel();
 
 
         calendarTable = new JTable(calendarTableModel);
-        calendarScrollPane = new JScrollPane(calendarTable);
         calendarTable.setShowGrid(true);
         calendarTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // I may wwant to change this from selectring one cell to selecting the whole row
         calendarTable.getTableHeader().setReorderingAllowed(false);
@@ -109,22 +107,22 @@ public class CalendarGUI {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        thePanel.add(monthLabel, gbc);
+        //gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(monthLabel, gbc);
 
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 10;
         gbc.weightx = 0;
-        thePanel.add(prevMonthButton, gbc);
+        mainPanel.add(prevMonthButton, gbc);
 
 
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 0;
-        thePanel.add(nextMonthButton, gbc);
+        mainPanel.add(nextMonthButton, gbc);
     }
 
 
@@ -145,7 +143,7 @@ public class CalendarGUI {
 
         String headings[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         calendarTableModel.setColumnIdentifiers(headings);
-
+        calendarTable.setRowHeight(30);
 
         year = myCalendar.get(Calendar.YEAR);
         month = myCalendar.get(Calendar.MONTH);
@@ -158,14 +156,17 @@ public class CalendarGUI {
         int start = cal.get(Calendar.DAY_OF_WEEK);
 
 
-        int row = 0;
+        int row = 1;
         int col = start - 1;
 
         calendarTableModel.setRowCount(0);  //This clears the pre-existing values on the table to prevent them from bleeding onto new months
-        calendarTableModel.setRowCount(6);  //this just sets the number of rows
+        calendarTableModel.setRowCount(7);  //this just sets the number of rows
 
-
-
+        int dayNumber = 0;
+        for (String day : headings) {
+            calendarTableModel.setValueAt(day,0,dayNumber);
+            dayNumber++;
+        }
 
         for (int day = 1; day <= max; day++) {
             calendarTableModel.setValueAt(day, row, col);
