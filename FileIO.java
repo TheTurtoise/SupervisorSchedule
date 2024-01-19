@@ -16,13 +16,6 @@ public class FileIO {
     static int rowIteration = 0;
     static int columnIteration = 0;
 
-    public static void instantiate() {
-        // ISSUE IS HERE
-        for(int i = 0; i < 17; i++)  {
-            dataTable.add(new ArrayList<String>());
-        }
-        System.out.println("2d arraylist instantiated");
-    }
     public static void reading() {
         // Read
         try {
@@ -38,7 +31,9 @@ public class FileIO {
             Iterator<Row> rowIterator = sheet.iterator();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                
+
+                dataTable.add(new ArrayList<String>());
+
                 columnIteration = 0;
                 while (columnIteration <= 17)
                 {
@@ -74,7 +69,10 @@ public class FileIO {
         }
 
         System.out.println("\nsuccess");
-        System.out.println(dataTable);
+        for (List<String> individual : dataTable) {
+            System.out.println(individual);
+            new Teacher().setAll(individual);
+        }
     }
 
     public static void writing() {
