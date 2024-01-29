@@ -8,7 +8,7 @@ import java.util.Locale;
 public class ScheduleGUI {
     public static int getCurrentDayNumber() {
         LocalDate currentDate = LocalDate.now();
-        return currentDate.getDayOfWeek().getValue();
+        return currentDate.getDayOfMonth();
     }
     public ScheduleGUI() {
         // Create JFrame for the table
