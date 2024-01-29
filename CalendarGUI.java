@@ -144,7 +144,3 @@ public class CalendarGUI extends JFrame {
         SwingUtilities.invokeLater(CalendarGUI::new);
     }
 }
-
-        }
-    }
-}
