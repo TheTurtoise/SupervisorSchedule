@@ -56,7 +56,6 @@ public class CalendarGUI extends JFrame {
 
         openChartButton.addActionListener(e -> {
             // Code to open the TallyChart
-            String[] teacherNames = {"Teacher1", "Teacher2", "Teacher3" /* Add more teachers if needed */};
             new TallyChart();
         });
 
@@ -111,6 +110,8 @@ public class CalendarGUI extends JFrame {
 
                 if (hasNonNullValue) {
                     // Handle the row click action here
+                    printDaysOfWeek(row);
+
                     SwingUtilities.invokeLater(() -> new ScheduleGUI());
                 }
             }
@@ -124,7 +125,18 @@ public class CalendarGUI extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         add(calendarScrollPane, gbc);
     }
+    private void printDaysOfWeek(int clickedRow) {
+        System.out.println("Click on week " + (clickedRow + 1) + ":");
 
+        for (int i = 0; i < 7; i++) {
+            Object cellValue = calendarTable.getValueAt(clickedRow, i);
+            if (cellValue != null) {
+                // Get the header of the corresponding column
+                String columnHeader = (String) calendarTable.getColumnModel().getColumn(i).getHeaderValue();
+                System.out.println(columnHeader + ": " + cellValue);
+            }
+        }
+    }
     private DefaultTableModel createNonEditableTableModel() {
         return new DefaultTableModel() {
             @Override
