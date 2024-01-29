@@ -14,7 +14,6 @@ public class ScheduleGUI {
         // Create JFrame for the table
         JFrame frame = new JFrame("Schedule ");
         frame.setLayout(new BorderLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         LocalDate currentDate = LocalDate.now();
         String currentMonth = currentDate.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());
         int weekNumber = currentDate.get(java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR);
@@ -153,7 +152,7 @@ public class ScheduleGUI {
 
         // Create the table with the model
         JTable ScheduleTable = new JTable(ScheudleTableModel);
-        ScheduleTable.setRowHeight(25);
+        ScheduleTable.setRowHeight(30);
         ScheduleTable.getTableHeader().setReorderingAllowed(false);
         ScheduleTable.getColumnModel().getColumn(0).setPreferredWidth(85);
         ScheduleTable.getColumnModel().getColumn(1).setPreferredWidth(90);
@@ -166,7 +165,7 @@ public class ScheduleGUI {
         frame.add(scrollPane,BorderLayout.CENTER);
 
         // Set the size of the frame and make it visible
-        frame.setSize(1300, 455);
+        frame.setSize(1300, 529);
         frame.setVisible(true);
     }
 }
