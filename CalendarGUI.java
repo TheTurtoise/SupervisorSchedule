@@ -3,8 +3,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class CalendarGUI extends JFrame {
     private JLabel monthLabel;
@@ -33,11 +37,12 @@ public class CalendarGUI extends JFrame {
 
         monthLabel = new JLabel("", JLabel.LEFT);
         monthLabel.setFont(new Font(null, Font.BOLD, 30));
-        prevMonthButton = new JButton("<<");
+        prevMonthButton = new JButton("<");
         prevMonthButton.setFocusable(false);
-        nextMonthButton = new JButton(">>");
+        nextMonthButton = new JButton(">");
         nextMonthButton.setFocusable(false);
         openChartButton = new JButton("Open Staff Chart");
+        openChartButton.setFocusable(false);
 
         prevMonthButton.addActionListener(e -> {
             calendar.add(Calendar.MONTH, -1);
@@ -52,7 +57,7 @@ public class CalendarGUI extends JFrame {
         openChartButton.addActionListener(e -> {
             // Code to open the TallyChart
             String[] teacherNames = {"Teacher1", "Teacher2", "Teacher3" /* Add more teachers if needed */};
-            new TallyChart(teacherNames);
+            new TallyChart();
         });
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -88,6 +93,29 @@ public class CalendarGUI extends JFrame {
         calendarTable = new JTable(calendarTableModel);
         calendarTable.setAutoCreateRowSorter(true);
         calendarScrollPane = new JScrollPane(calendarTable);
+
+        calendarTable.addMouseListener(new MouseAdapter() {
+            @Override
+        public void mouseClicked(MouseEvent e) {
+            int row = calendarTable.rowAtPoint(e.getPoint());
+            if (row >= 0) {
+                // Check if any column in the clicked row has a non-null value
+                boolean hasNonNullValue = false;
+                for (int col = 0; col < calendarTable.getColumnCount(); col++) {
+                    Object value = calendarTable.getValueAt(row, col);
+                    if (value != null) {
+                        hasNonNullValue = true;
+                        break;
+                    }
+                }
+
+                if (hasNonNullValue) {
+                    // Handle the row click action here
+                    SwingUtilities.invokeLater(() -> new ScheduleGUI());
+                }
+            }
+        }
+    });
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -138,9 +166,5 @@ public class CalendarGUI extends JFrame {
                 row++;
             }
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(CalendarGUI::new);
     }
 }
