@@ -18,7 +18,8 @@ public class Main {
 
 //        System.out.println(sizeList);
 
-        new ScheduleGUI();
+        SwingUtilities.invokeLater(() -> new CalendarGUI());
+        SwingUtilities.invokeLater(() -> new ScheduleGUI());
 
 
 
