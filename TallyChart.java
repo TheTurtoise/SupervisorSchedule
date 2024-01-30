@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TallyChart {
-
+//this is the tallychart
     private JFrame frame;
     private DefaultTableModel model;
     private JTable staffChartTable;
@@ -14,16 +14,16 @@ public class TallyChart {
     public TallyChart() {
         frame = new JFrame("Staff Chart");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+//these are the columns
         model = new DefaultTableModel();
         model.addColumn("Staff Name");
         model.addColumn("Number of Shifts");
         model.addColumn("Availability");
-
+//these are the rows for the amount of teachers, this is the default amount. You can increase the default here
         for (int i = 1; i <= 120; i++) {
             model.addRow(new Object[]{" ", i, "Available/Unavailable"});
         }
-
+//search button, that highlights stuff searched
         staffChartTable = new JTable(model);
         staffChartTable.setDefaultRenderer(Object.class, new HighlightRenderer());
         JScrollPane scrollPane = new JScrollPane(staffChartTable);
@@ -36,7 +36,7 @@ public class TallyChart {
                 search();
             }
         });
-
+// addrow button
         JButton addRowButton = new JButton("Add Row");
         addRowButton.addActionListener(new ActionListener() {
             @Override
@@ -44,7 +44,7 @@ public class TallyChart {
                 addRow();
             }
         });
-
+// delete row button
         JButton deleteRowButton = new JButton("Delete Row");
         deleteRowButton.addActionListener(new ActionListener() {
             @Override
@@ -52,7 +52,7 @@ public class TallyChart {
                 deleteRow();
             }
         });
-
+//panel for all of the buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(new JLabel("Search: "));
         buttonPanel.add(searchField);
@@ -70,7 +70,7 @@ public class TallyChart {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
+// serach function
     private void search() {
         String searchTerm = searchField.getText().toLowerCase();
 
@@ -84,18 +84,18 @@ public class TallyChart {
             }
         }
     }
-
+// add row function
     private void addRow() {
         model.addRow(new Object[]{" ", model.getRowCount() + 1, "Available/Unavailable"});
     }
-
+// delete row function
     private void deleteRow() {
         int selectedRow = staffChartTable.getSelectedRow();
         if (selectedRow != -1) {
             model.removeRow(selectedRow);
         }
     }
-
+// search function, mainly highlighting part
     private class HighlightRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(
@@ -104,10 +104,10 @@ public class TallyChart {
             Component cellComponent = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             String searchTerm = searchField.getText().toLowerCase();
-
+// by default they will have no colour
             if (!searchTerm.isEmpty()) {
                 String staffName = model.getValueAt(row, 0).toString().toLowerCase();
-
+//searched terms will be yellow, all else will be default
                 if (staffName.contains(searchTerm)) {
                     cellComponent.setBackground(Color.YELLOW);
                 } else {
