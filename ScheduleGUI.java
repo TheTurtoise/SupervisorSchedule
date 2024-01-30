@@ -1,16 +1,23 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.Locale;
+import java.util.*;
+import java.util.List;
 
 public class ScheduleGUI {
+    Map<String,DaySchedule> daySchedule;
+    List<String> days;
     public static int getCurrentDayNumber() {
         LocalDate currentDate = LocalDate.now();
         return currentDate.getDayOfMonth();
     }
-    public ScheduleGUI() {
+    public ScheduleGUI(Map<String,DaySchedule> daySchedule, List<String> days)  {
+        this.daySchedule =daySchedule;
+        this.days = days;
         // Create JFrame for the table
         JFrame frame = new JFrame("Schedule ");
         frame.setLayout(new BorderLayout());
@@ -71,6 +78,33 @@ public class ScheduleGUI {
 
 
         }
+
+        List<DaySchedule> dayScheduleForThisWeek = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            dayScheduleForThisWeek.add(new DaySchedule()); // Empty for padding
+        }
+        for(String day: days) {
+            DaySchedule schedule = daySchedule.get(day);
+            if(schedule!=null){
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = null;
+                try {
+                    date = dateFormat.parse(day);
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                    if (dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY) {
+                        dayScheduleForThisWeek.add(dayOfWeek-2,schedule);
+                    }
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+           // dayScheduleForThisWeek.add(daySchedule.get(day));
+        }
+
+
         /*
         List<String> header = new ArrayList<>()
         header.add("Duty");
@@ -85,66 +119,68 @@ public class ScheduleGUI {
         */
 
         // Add rows to the model
+        DaySchedule schedules = null;
         for (int i = 0; i < 15; i++) {
             Object[] row = new Object[7]; // 7 columns
-            for (int j = 0; j < 7; j++) {
-                if (i==0) {
-                    row[0] = "11:25 am - 12:02 pm";
-                    row[1] = "Cafeteria";
-                }
-                else if (i == 1) {
-                    row[1] = "Library";
-                }
-                else if (i == 2) {
-                    row[0] = "11:35 am - 12:12 pm";
-                    row[1] = "Back Foyer & Art/ASD hallways";
-                }
-                else if (i ==3 ) {
-                    row[1] = "Front Foyer & gym/Tech hallways";
-                }
-                else if (i==4) {
-                    row[1] = "Library";
-                }
-                else if (i == 5) {
-                    row[0] = "11:38 am - 12:15 pm";
-                    row[1] = "Gym / Weight Room";
-                }
-                else if (i == 6) {
-                    row[1] = "Student Services";
-                }
-                else if (i == 7) {
-                    row[1] = " Front & Back Foyer";
-                }
-                else if (i == 8) {
-                    row[1] = "Floor 2 & 3";
-                }
-                else if (i == 9) {
-                    row[1] = "Room 314";
-                }
-                else if (i == 10) {
-                    row[1] = "ASD";
-                }
-                else if (i == 11) {
-                    row[0] = "11:48 am - 12:25 pm";
-                    row[1] = "Back Foyer & Art/ASD hallways";
-                }
-                else if (i == 12) {
-                    row[1] = "Front Foyer & Gym/Tech hallways";
-                }
-                else if (i==13) {
-                    row[1] = "Cafeteria";
-                }
-                else if (i==14) {
-                    row[1] = "Library";
+            for (int j = 0; j < 7; j++){
+                if(j<2) {
+                    if (i == 0) {
+                        row[0] = "11:25 am - 12:02 pm";
+                        row[1] = "Cafeteria";
+                    } else if (i == 1) {
+                        row[1] = "Library";
+                    } else if (i == 2) {
+                        row[0] = "11:35 am - 12:12 pm";
+                        row[1] = "Back Foyer & Art/ASD hallways";
+                    } else if (i == 3) {
+                        row[1] = "Front Foyer & gym/Tech hallways";
+                    } else if (i == 4) {
+                        row[1] = "Library";
+                    } else if (i == 5) {
+                        row[0] = "11:38 am - 12:15 pm";
+                        row[1] = "Gym / Weight Room";
+                    } else if (i == 6) {
+                        row[1] = "Student Services";
+                    } else if (i == 7) {
+                        row[1] = " Front & Back Foyer";
+                    } else if (i == 8) {
+                        row[1] = "Floor 2 & 3";
+                    } else if (i == 9) {
+                        row[1] = "Room 314";
+                    } else if (i == 10) {
+                        row[1] = "ASD";
+                    } else if (i == 11) {
+                        row[0] = "11:48 am - 12:25 pm";
+                        row[1] = "Back Foyer & Art/ASD hallways";
+                    } else if (i == 12) {
+                        row[1] = "Front Foyer & Gym/Tech hallways";
+                    } else if (i == 13) {
+                        row[1] = "Cafeteria";
+                    } else if (i == 14) {
+                        row[1] = "Library";
+                    }
+                }else{
+                    if (j-2 < dayScheduleForThisWeek.size()) {
+                        schedules = dayScheduleForThisWeek.get(j - 2);
+                    }else{
+                        schedules =null;
+                    }
+
+                    if(schedules!=null&& !schedules.getTasks().isEmpty()) {
+                        Task task = schedules.getTasks().get(i);
+                        if(task != null && task.getTeacherInfo() != null) {
+                            row[j] = task.getTeacherInfo().getName();
+                        }
+                    }
                 }
 
 
 //                if (j == 0 && i < 5) {
 //                    row[0] = "Special " + (i + 1); // Special data for the first 5 rows in the first column
 //                }
-                else {
+               // else {
                     //row[j] = "Data " + (i + 1) + "," + (j + 1);
-                }
+             //   }
             }
 
             ScheudleTableModel.addRow(row);

@@ -6,9 +6,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class CalendarGUI extends JFrame {
     private JLabel monthLabel;
@@ -18,13 +19,17 @@ public class CalendarGUI extends JFrame {
     private JScrollPane calendarScrollPane;
     private Calendar calendar;
 
-    public CalendarGUI() {
+    private Map<String,DaySchedule> daySchedule;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    public CalendarGUI(Map<String,DaySchedule> daySchedule) {
         setTitle("Java Calendar");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         calendar = Calendar.getInstance();
+        this.daySchedule = daySchedule;
 
         Actions();
         update();
@@ -95,28 +100,30 @@ public class CalendarGUI extends JFrame {
 
         calendarTable.addMouseListener(new MouseAdapter() {
             @Override
-        public void mouseClicked(MouseEvent e) {
-            int row = calendarTable.rowAtPoint(e.getPoint());
-            if (row >= 0) {
-                // Check if any column in the clicked row has a non-null value
-                boolean hasNonNullValue = false;
-                for (int col = 0; col < calendarTable.getColumnCount(); col++) {
-                    Object value = calendarTable.getValueAt(row, col);
-                    if (value != null) {
-                        hasNonNullValue = true;
-                        break;
+            public void mouseClicked(MouseEvent e) {
+                int row = calendarTable.rowAtPoint(e.getPoint());
+                if (row >= 0) {
+                    // Check if any column in the clicked row has a non-null value
+                    boolean hasNonNullValue = false;
+                    for (int col = 0; col < calendarTable.getColumnCount(); col++) {
+                        Object value = calendarTable.getValueAt(row, col);
+                        if (value != null) {
+                            hasNonNullValue = true;
+                            break;
+                        }
+                    }
+
+                    if (hasNonNullValue) {
+                        // Handle the row click action here
+                        calendar.get(Calendar.MONTH);
+                        printDaysOfWeek(row);
+                        List<String>  days = getDate(row);
+
+                        SwingUtilities.invokeLater(() -> new ScheduleGUI(daySchedule,days));
                     }
                 }
-
-                if (hasNonNullValue) {
-                    // Handle the row click action here
-                    printDaysOfWeek(row);
-
-                    SwingUtilities.invokeLater(() -> new ScheduleGUI());
-                }
             }
-        }
-    });
+        });
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -136,6 +143,37 @@ public class CalendarGUI extends JFrame {
                 System.out.println(columnHeader + ": " + cellValue);
             }
         }
+    }
+    private List<String> getDate(int clickedRow) {
+        System.out.println("Click on week " + (clickedRow + 1) + ":");
+        List<String> dates = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            Object cellValue = calendarTable.getValueAt(clickedRow, i);
+            if (cellValue != null) {
+                // Get the header of the corresponding column
+                String columnHeader = (String) calendarTable.getColumnModel().getColumn(i).getHeaderValue();
+                System.out.println(columnHeader + ": " + cellValue);
+                Calendar calendar2 = Calendar.getInstance();
+                calendar2.set(Calendar.YEAR, calendar.get(Calendar.YEAR));
+                calendar2.set(Calendar.MONTH, calendar.get(Calendar.MONTH));
+                calendar2.set(Calendar.DAY_OF_MONTH, Integer.parseInt(cellValue.toString()));
+                // Set hour, minute, second and millisecond to 0
+                calendar2.set(Calendar.HOUR_OF_DAY, 0);
+                calendar2.set(Calendar.MINUTE, 0);
+                calendar2.set(Calendar.SECOND, 0);
+                calendar2.set(Calendar.MILLISECOND, 0);
+
+                int dayOfWeek = calendar2.get(Calendar.DAY_OF_WEEK);
+                if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
+                 //   dates.add(null);
+                    continue;
+                }
+                String formattedDate = dateFormat.format(calendar2.getTime());
+                dates.add(formattedDate);
+
+            }
+        }
+        return dates;
     }
     private DefaultTableModel createNonEditableTableModel() {
         return new DefaultTableModel() {
