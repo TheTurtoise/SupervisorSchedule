@@ -37,6 +37,7 @@ public class CalendarGUI extends JFrame {
         setVisible(true);
     }
 
+    //create Label for buttons and date
     private void Actions() {
         setLayout(new GridBagLayout());
 
@@ -98,6 +99,7 @@ public class CalendarGUI extends JFrame {
         calendarTable.setAutoCreateRowSorter(true);
         calendarScrollPane = new JScrollPane(calendarTable);
 
+        //make the row/week into a clickable button
         calendarTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -184,6 +186,7 @@ public class CalendarGUI extends JFrame {
         };
     }
 
+    //assigned the cells the actual values of the month
     private void update() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
         monthLabel.setText(sdf.format(calendar.getTime()));
